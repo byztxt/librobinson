@@ -127,6 +127,12 @@ pos_dict = {
     # NON-STANDARD Robinson tags
     "PUNCT" : [
     ],
+    "NPROP-" : [
+        "case",
+        "number",
+        "gender",
+        "opt_suffix",
+    ],
 
     # STANDARD Robinson tags
     "ADV" : [
@@ -169,12 +175,6 @@ pos_dict = {
         "opt_suffix",
     ],
     "N-" : [
-        "case",
-        "number",
-        "gender",
-        "opt_suffix",
-    ],
-    "NPROP-" : [
         "case",
         "number",
         "gender",
@@ -290,7 +290,6 @@ pos_list = [
     "N-LI",
     "N-OI",
     "N-",
-    "NPROP-",
     "A-",
     "T-",
     "V-",
@@ -305,6 +304,7 @@ pos_list = [
     "F-",
     "S-",
     "PUNCT", # NON-STANDARD
+    "NPROP-", # NON-STANDARD
     ]
 
 
