@@ -100,7 +100,7 @@ part_dict = {
         "P-" : "participle",
         "R-" : "imperative participle",
     },
-    "verb-extra" : {
+    "verb_extra" : {
         "-M"   : "middle significance",
         "-C"   : "contracted form",
         "-T"   : "transitive",
@@ -200,7 +200,7 @@ pos_dict = {
         "opt_case",
         "opt_number",
         "opt_gender",
-        "opt_verb-extra",
+        "opt_verb_extra",
         ],
     "P-" : [
         "opt_person",
