@@ -15,6 +15,11 @@ Dr. Ulrik Sandborg-Petersen of [Scripture Systems ApS](http://scripturesys.com).
 
 James Tauber contributed some of the code for the convert.py script.
 
+# Installation
+
+```
+$ pip install librobinson
+```
 
 # Support?  Patches?
 
