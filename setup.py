@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name="librobinson",
-    version="0.2.1",
+    version="0.2.2",
     packages=find_packages(),
     scripts=[
         'robinson/booknames.py',
@@ -25,7 +25,7 @@ setup(
 
     package_data={
         # If any package contains *.txt or *.md files, include them:
-        '': ['*.txt', '*.md'],
+        '': ['*.txt', '*.md', "LICENSE"],
         # And include any *.msg files found in the 'hello' package, too:
         #'hello': ['*.msg'],
     },
