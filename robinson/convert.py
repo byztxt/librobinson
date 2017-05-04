@@ -2985,15 +2985,15 @@ UMARtoGALATIAtrans = maketrans("abgdezqyiklmnxoprsvtufcyw", "abgdezjqiklmnxoprsv
 BETAtoUMARtrans = maketrans("ABGDEZHQIKLMNCOPRSTUFXYW", "abgdezhqiklmnxoprstufcyw")
 
 
-OLBtoBETAtrans = maketrans("abgdezhyiklmnxoprsvtufcqw", "ABGDEZHQIKLMNCOPRSSTUFXYW")
-OLBtoGALATIAtrans = maketrans("abgdezhyiklmnxoprsvtufcqw", "abgdezjqiklmnxoprsvtufcyw")
+OLBtoBETAtrans = maketrans("abgdezhqiklmnxoprsvtufcyw", "ABGDEZHQIKLMNCOPRSSTUFXYW")
+OLBtoGALATIAtrans = maketrans("abgdezhqiklmnxoprsvtufcyw", "abgdezjqiklmnxoprsvtufcyw")
 
 TAGtoHELBETIKEtrans = maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "AB\x04\x05E\x06\x07HI\x08K\x0bMNO\x0c\x10\x11\x12T\x1b\x1c\x1d\x1e\x1fZ")
 
 BETAtoGALATIAtrans = maketrans("ABGDEZHQIKLMNCOPRSSTUFXYW", "abgdezjqiklmnxoprsvtufcyw")
 MixedCaseBETAtoBETAtrans = maketrans("AaBbGgDdEeZzHhQqIiKkLlMmNnCcOoPpRrSsJjTtUuFfXxYyWw", "AABBGGDDEEZZHHQQIIKKLLMMNNCCOOPPRRSSSSTTUUFFXXYYWW")
 
-BETAtoOLBtrans = maketrans("ABGDEZHQIKLMNCOPRSTUFXYW", "abgdezhyiklmnxoprstufcqw")
+BETAtoOLBtrans = maketrans("ABGDEZHQIKLMNCOPRSTUFXYW", "abgdezhqiklmnxoprstufcyw")
 
 
 reolbstrip = re.compile("[\\[\\]<>]+")
