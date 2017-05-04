@@ -1,9 +1,23 @@
 from setuptools import setup, find_packages
 setup(
     name="librobinson",
-    version="0.1",
+    version="0.2.0",
     packages=find_packages(),
-    scripts=['robinson'],
+    scripts=[
+        'robinson/booknames.py',
+        'robinson/book.py',
+        'robinson/chapter.py',
+        'robinson/convert.py',
+        'robinson/__init__.py',
+        'robinson/kind.py',
+        'robinson/reader.py',
+        'robinson/readwhat.py',
+        'robinson/robinson.py',
+        'robinson/robinsontags.py',
+        'robinson/variant.py',
+        'robinson/verse.py',
+        'robinson/word.py',
+    ],
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
