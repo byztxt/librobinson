@@ -13,23 +13,23 @@ import reader
 import readwhat
 
 
-def read_robinson(directory, suffix, read_what):
+def read_robinson(directory, suffix, read_what, reading_encoding):
     read_what = readwhat.normalize(read_what)
     read_what_str = readwhat.read_what2string(read_what)
     sys.stderr.write("Now reading '%s' from directory %s with suffix %s\n" % (read_what_str, directory, suffix))
     rd = reader.Reader(directory, suffix)
-    rd.read_NT(read_what)
+    rd.read_NT(read_what, reading_encoding)
     return rd
 
 def test():
-    indirectory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'WHP'))
-    suffix = "WHP"
+    indirectory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'byzantine-majority-text', 'parsed'))
+    suffix = "UB5"
 
     readers = []
     
     #for read_what in ["text_only", "variants_only", "text_and_variants"]:
-    for read_what in ["text_only"]:
-        rd = read_robinson(indirectory, suffix, read_what)
+    for (read_what, reading_encoding) in [("text_only", reader.read_UMAR_encoding)]:
+        rd = read_robinson(indirectory, suffix, read_what, reading_encoding)
         readers.append((read_what, rd))
 
     outdir = "/tmp"
@@ -37,7 +37,6 @@ def test():
     for (read_what, rd) in readers:
         for (write_what, basename, suffix) in [
                 ("SFM", "", "SFM"),
-                ("MORPH", "", "MRP"), 
                 ("StrippedLinear", "", "SLN"),
                 ("Linear", "", "LIN"),
                 ("WHLinear", "WHLinear.txt", ""),

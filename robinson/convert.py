@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 # beta2GalatiaAndUnicode.py
 #
-# Version 2004-11-23 by James Tauber
-
-# With changes by Ulrik Sandborg-Petersen 2005-03-19 and on many more occasions
+# Version 2004-11-23 with changes by ulrikp 2005-03-19
 #
 # James Tauber
 # http://jtauber.com/
 #
-# You are free to redistribute this, but please inform me (James) of any errors.
-#
-# Please inform Ulrik of any errors as well.
+# You are free to redistribute this, but please inform me of any errors
 #
 #
 # Modified by Ulrik Sandborg-Petersen to do BETA to SIL Galatia as
@@ -34,9 +30,21 @@
 # - to get final sigma, string must end in \n
 # - remainder will contain rest of beta if not all can be converted
 from __future__ import unicode_literals, print_function
+
 import string
 import re
 import sys
+
+
+#
+# From:
+# https://stackoverflow.com/questions/6628306/attributeerror-module-object-has-no-attribute-maketrans
+#
+try:
+    maketrans = ''.maketrans
+except AttributeError:
+    # fallback for Python 2
+    from string import maketrans
 
 
 class Trie:
@@ -105,7 +113,7 @@ def beta2unicodeTrie():
     t.add("*R",      "\u03A1")
     t.add("*S",      "\u03A3")
     t.add("*T",      "\u03A4")
-    t.add("*",      "\u03A5")
+    t.add("*U",      "\u03A5")
     t.add("*F",      "\u03A6")
     t.add("*X",      "\u03A7")
     t.add("*Y",      "\u03A8")
@@ -179,7 +187,6 @@ def beta2unicodeTrie():
 
     t.add("I+",     "\u03CA")
     t.add("U+",     "\u03CB")
-
 
     t.add("A)",     "\u1F00")
     t.add("A(",     "\u1F01")
@@ -335,15 +342,15 @@ def beta2unicodeTrie():
     t.add("*(/O",    "\u1F4D")
     #
     t.add("*U(",     "\u1F59")
-    t.add("*(",     "\u1F59")
-    t.add("(*",     "\u1F59")
+    t.add("*(U",     "\u1F59")
+    t.add("(*U",     "\u1F59")
     t.add("*U(\\",   "\u1F5B")
-    t.add("*(\\",   "\u1F5B")
+    t.add("*(\\U",   "\u1F5B")
     #
-    t.add("*(/",    "\u1F5D")
+    t.add("*(/U",    "\u1F5D")
     t.add("*U(/",    "\u1F5D")
     #
-    t.add("*(=",    "\u1F5F")
+    t.add("*(=U",    "\u1F5F")
     t.add("*U(=",    "\u1F5F")
     
     t.add("*W)",     "\u1F68")
@@ -484,8 +491,8 @@ def beta2unicodeTrie():
 
     t.add("[1", "(")
     t.add("]1", ")")
-    t.add("[16","\u27e6") # Double square bracket in one glyph - open
-    t.add("]16","\u27e7") # Double square bracket in one glyph - close
+    t.add("[16",u"\u27e6") # Double square bracket in one glyph - open
+    t.add("]16",u"\u27e7") # Double square bracket in one glyph - close
     t.add("[1I]1",   "(I)")
     t.add("[1II]1",  "(II)")
     t.add("[11]1",   "(1)")
@@ -528,11 +535,11 @@ def beta2SBLTransliterationTrie():
     t.add("*EU)=",   "Eû")
     t.add("*EU)\\",  "Eù")
     t.add("*EU)/",   "Eú")
-    t.add("*EU)",    "E")
+    t.add("*EU)",    "Eu")
     t.add("*EU(=",   "Heû")
     t.add("*EU(\\",  "Heù")
     t.add("*EU(/",   "Heú")
-    t.add("*EU(",    "He")
+    t.add("*EU(",    "Heu")
     t.add("*E*F*E*S*I*O*U*S",    "EFESIOUS")
     t.add("*E*N",    "EN")
     t.add("*E*W*N",  "EŌN")
@@ -541,7 +548,7 @@ def beta2SBLTransliterationTrie():
     t.add("*HU)/",   "Ēú")
     t.add("*HU)=",   "û")
     t.add("*HU)\\",  "Ēù")
-    t.add("*HU)",    "Ē")
+    t.add("*HU)",    "Ēu")
     t.add("*Q",      "Th")
     t.add("*I",      "I")
     t.add("*I\n",    "I")
@@ -556,7 +563,7 @@ def beta2SBLTransliterationTrie():
     t.add("*S",      "S")
     t.add("*S\n",    "S")
     t.add("*T",      "T")
-    t.add("*A*",    "A") 
+    t.add("*A*U",    "AU") 
     t.add("*AU(=",    "HAû") 
     t.add("*AU(\\",    "HAù") 
     t.add("*A*B*U*L*W*N",    "ABYLŌN") 
@@ -572,7 +579,7 @@ def beta2SBLTransliterationTrie():
     t.add("*A*I*O*U*S",  "AIOUS")
     t.add("*A*I*S",  "AIS")
     t.add("*A*N*A*Q*E*M*A",  "ANATHEMA")
-    t.add("*A*N*N*O*",  "ANNO")
+    t.add("*A*N*N*O*U",  "ANNOU")
     t.add("*A*N*N*H*N",  "ANNĒN")
     t.add("*A*N*H*S",  "ANĒS")
     t.add("*A*S*I*L*E*U*S",  "ASILEUS")
@@ -584,20 +591,20 @@ def beta2SBLTransliterationTrie():
     t.add("*A*R*K*O*N",  "ARKON")
     t.add("*A*K*A*R*I*O*I",  "AKARIOI")
     t.add("*A*K*W*B*O*S",  "AKŌBOS")
-    t.add("*A*K*W*B*O*",  "AKŌBO")
+    t.add("*A*K*W*B*O*U",  "AKŌBOU")
     t.add("*A*C*E*I*S",  "AXEIS")
     t.add("*E*B*R*A*I*O*U*S",    "BRAIOUS") 
     t.add("*E*G*A*L*H",  "EGALĒ") 
     t.add("*E*G*E*N*E*T*O",  "EGENETO") 
     t.add("*E*L*U*G*M*A*T*W*N",  "ELYGMATŌN") 
-    t.add("*E*",    "E")
+    t.add("*E*U",    "EU")
     t.add("*E*S",    "ES")
     t.add("*E*R*A",    "ERA")
     t.add("*E*T*A",    "ETA")
     t.add("*E*T*E*I",    "ETEI")
     t.add("*E*T*R*O*N",    "ETRON")
     t.add("*E*T*R*O*S",    "ETROS")
-    t.add("*E*T*R*O*",    "ETRO")
+    t.add("*E*T*R*O*U",    "ETROU")
     t.add("*E*W",    "EŌ")
     t.add("*E*O*R*T*H*S",    "HEORTĒS")
     t.add("*E*P*I*S*T*O*L*H",    "EPISTOLĒ")
@@ -608,12 +615,12 @@ def beta2SBLTransliterationTrie():
     t.add("*E*S*T*I*N",    "ESTIN")
     t.add("*E*S*S*A*L*O*N*I*K*E*I*S",    "ESSALONIKEIS")
     t.add("*H*G*G*I*Z*E*N",    "ĒNGIZEN")
-    t.add("*H*",    "Ē") 
+    t.add("*H*U",    "ĒU") 
     t.add("*H*N", "ĒN")
     t.add("*H*M*O*N*A", "ĒMONA")
     t.add("*H*M*E*R*A*I*S", "HĒMERAIS")
     t.add("*H*S\n", "ĒS")
-    t.add("*H*S*O*", "ĒSO")
+    t.add("*H*S*O*U", "ĒSOU")
     t.add("*H*S*O*U]", "ĒSOU]")
     t.add("*H*S*O*U*S", "ĒSOUS")
     t.add("*H*S*I*O*U*S", "ĒSIOUS")
@@ -623,7 +630,7 @@ def beta2SBLTransliterationTrie():
     t.add("*O*L*O*S*S*A*E*I*S",    "OLOSSAEIS")
     t.add("*O*L*U*M*E*R*W*S",    "OLYMERŌS")
     t.add("*O*L*U*T*R*O*P*W*S",    "OLYTROPŌS")
-    t.add("*O*",    "O")
+    t.add("*O*U",    "OU")
     t.add("*O*N",    "ON")
     t.add("*O*G*O*N",    "OGON")
     t.add("*O*Q*E*O*S",    "OTHEOS")
@@ -642,23 +649,23 @@ def beta2SBLTransliterationTrie():
     t.add("*U*I",    "UI")
     t.add("*U*R*I*O*S",    "YRIOS")
     t.add("*U*R*I*W*N",    "YRIŌN")
-    t.add("*A",     "A")
+    t.add("*AU",     "Au")
     t.add("*AU(/",   "HAú")
-    t.add("*AU)",    "A")
+    t.add("*AU)",    "Au")
     t.add("*AU)/",   "Aú")
-    t.add("*E",     "E")
-    t.add("*H",     "Ē")
-    t.add("*OU)",    "O")
+    t.add("*EU",     "Eu")
+    t.add("*HU",     "Ēu")
+    t.add("*OU)",    "Ou")
     t.add("*OU)/",   "Oú")
     t.add("*OU)\\",   "Où")
     t.add("*OU(/",   "HOú")
     t.add("*OU(\\",  "HOù")
     t.add("*OU(=",   "HOû")
     t.add("OU(\\",   "hoù")
-    t.add("*O",     "O")
+    t.add("*OU",     "Ou")
     t.add("*UI",     "Ui")
     t.add("*UI(",     "HUi")
-    t.add("*",      "Y")
+    t.add("*U",      "Y")
     t.add("*F",      "Ph")
     t.add("*X",      "Ch")
     t.add("*Y",      "Ps")
@@ -707,17 +714,17 @@ def beta2SBLTransliterationTrie():
     t.add("S",      "s")
 
     t.add("T",      "t")
-    t.add("A",     "a")
-    t.add("E",     "e")
-    t.add("H",     "ē")
-    t.add("O",     "o")
+    t.add("AU",     "au")
+    t.add("EU",     "eu")
+    t.add("HU",     "ēu")
+    t.add("OU",     "ou")
     t.add("UI",     "ui")
     t.add("UI/",    "uí")
     t.add("UI/+",    "uï")
     t.add("UI\\",    "uì")
     t.add("UI=",    "uî")
     t.add("UI(",    "hui")
-    t.add("",      "y")
+    t.add("U",      "y")
     t.add("F",      "ph")
     t.add("X",      "ch")
     t.add("Y",      "ps")
@@ -791,16 +798,16 @@ def beta2SBLTransliterationTrie():
     t.add("O(\\",   "hò")
     t.add("O)/",    "ó")
     t.add("O(/",    "hó")
-    t.add("AU)",    "a")
-    t.add("EU)",    "e")
-    t.add("HU)",    "ē")
-    t.add("OU)",    "o")
+    t.add("AU)",    "au")
+    t.add("EU)",    "eu")
+    t.add("HU)",    "ēu")
+    t.add("OU)",    "ou")
     t.add("U)",     "y")
     t.add("U(I",    "hui")
-    t.add("AU(",    "ha")
-    t.add("EU(",    "he")
-    t.add("HU(",    "hē")
-    t.add("OU(",    "ho")
+    t.add("AU(",    "hau")
+    t.add("EU(",    "heu")
+    t.add("HU(",    "hēu")
+    t.add("OU(",    "hou")
     t.add("U(",     "hy")
     t.add("AU)\\",  "aù")
     t.add("EU)\\",  "eù")
@@ -940,15 +947,15 @@ def beta2SBLTransliterationTrie():
     t.add("*U(I",    "Hui")
     t.add("*U(*I",   "HUI")
     t.add("*U(",     "Hy")
-    t.add("*(",     "Hy")
+    t.add("*(U",     "Hy")
     t.add("*U(\\",   "Hỳ")
-    t.add("*(\\",   "Hỳ")
+    t.add("*(\\U",   "Hỳ")
     #
-    t.add("*(/",    "Hý")
+    t.add("*(/U",    "Hý")
     t.add("*U(/",    "Hý")
     
     #
-    t.add("*(=",    "Hŷ")
+    t.add("*(=U",    "Hŷ")
     t.add("*U(=",    "Hŷ")
     
     t.add("*W)",     "Ō")
@@ -1146,7 +1153,7 @@ def beta2GalatiaTrie():
     t.add("*R",      "R")
     t.add("*S",      "S")
     t.add("*T",      "T")
-    t.add("*",      "")
+    t.add("*U",      "U")
     t.add("*F",      "F")
     t.add("*X",      "C")
     t.add("*Y",      "Y")
@@ -1182,7 +1189,7 @@ def beta2GalatiaTrie():
     t.add("S",      "s")
 
     t.add("T",      "t")
-    t.add("",      "")
+    t.add("U",      "u")
     t.add("F",      "f")
     t.add("X",      "c")
     t.add("Y",      "y")
@@ -1309,16 +1316,16 @@ def beta2GalatiaTrie():
     t.add("*(/O",    "\xa9O")
 
     #
-    t.add("*)",     "H")
-    t.add("*U)",     "H")
-    t.add("*(",     "h")
-    t.add("*U(",     "h")
+    t.add("*)U",     "HU")
+    t.add("*U)",     "HU")
+    t.add("*(U",     "hU")
+    t.add("*U(",     "hU")
     #
-    t.add("*(/",    "\xa9")
-    t.add("*U(/",    "\xa9")
+    t.add("*(/U",    "\xa9U")
+    t.add("*U(/",    "\xa9U")
     #
-    t.add("*(=",    "\xab")
-    t.add("*U(=",    "\xab")
+    t.add("*(=U",    "\xabU")
+    t.add("*U(=",    "\xabU")
     
     t.add("*W)",     "HW")
     t.add("*)W",     "HW")
@@ -1489,7 +1496,7 @@ def galatia2BetaTrie():
     t.add("R",      "*R")
     t.add("S",      "*S")
     t.add("T",      "*T")
-    t.add("",      "*")
+    t.add("U",      "*U")
     t.add("F",      "*F")
     t.add("C",      "*X")
     t.add("Y",      "*Y")
@@ -1526,7 +1533,7 @@ def galatia2BetaTrie():
     t.add("s",      "S")
 
     t.add("t",      "T")
-    t.add("",      "")
+    t.add("u",      "U")
     t.add("f",      "F")
     t.add("c",      "X")
     t.add("y",      "Y")
@@ -1550,8 +1557,8 @@ def galatia2BetaTrie():
     t.add("hO",     "*(O")
 
     #
-    t.add("H",     "*)")
-    t.add("h",     "*(")
+    t.add("HU",     "*)U")
+    t.add("hU",     "*(U")
     #
     
     t.add("HW",     "*)W")
@@ -1605,21 +1612,21 @@ def galatia2BetaTrie():
     t.add("\xa9I",    "*(/I")
     t.add("\xa9J",    "*(/H")
     t.add("\xa9O",    "*(/O")
-    t.add("\xa9",    "*(/")
+    t.add("\xa9U",    "*(/U")
     t.add("\xa9W",    "*(/W")
     t.add("\xaaA",    "*(\\A")
     t.add("\xaaE",    "*(\\E")
     t.add("\xaaI",    "*(\\I")
     t.add("\xaaJ",    "*(\\H")
     t.add("\xaaO",    "*(\\O")
-    t.add("\xaa",    "*(\\")
+    t.add("\xaaU",    "*(\\U")
     t.add("\xaaW",    "*(\\W")
     t.add("\xabA",    "*(=A")
     t.add("\xabE",    "*(=E")
     t.add("\xabI",    "*(=I")
     t.add("\xabJ",    "*(=H")
     t.add("\xabO",    "*(=O")
-    t.add("\xab",    "*(=")
+    t.add("\xabU",    "*(=U")
     t.add("\xabW",    "*(=W")
     t.add("\xadA",    "*)/A")
     t.add("\xadE",    "*)/E")
@@ -1632,7 +1639,7 @@ def galatia2BetaTrie():
     t.add("\xaeI",    "*)\\I")
     t.add("\xaeJ",    "*)\\H")
     t.add("\xaeO",    "*)\\O")
-    t.add("\xae",    "*)\\")
+    t.add("\xaeU",    "*)\\U")
     t.add("\xaeW",    "*)\\W")
     t.add("\xafA",    "*)=A")
     t.add("\xafJ",    "*)=H")
@@ -1766,53 +1773,53 @@ def galatia2BetaTrie():
 def symbol2BetaTrie():
     t = Trie()
 
-    t.add("\uf04a",      "*F")
-    t.add("\uf050",      "*P")
+    t.add(u"\uf04a",      "*F")
+    t.add(u"\uf050",      "*P")
 
 
-    t.add("\uf061",      "A")
-    t.add("\uf062",      "B")
-    t.add("\uf067",      "G")
-    t.add("\uf064",      "D")
-    t.add("\uf065",      "E")
-    t.add("\uf07a",      "Z")
-    t.add("\uf068",      "H")
-    t.add("\uf071",      "Q")
-    t.add("\uf069",      "I")
-    t.add("\uf06b",      "K")
-    t.add("\uf06c",      "L")
-    t.add("\uf06d",      "M")
-    t.add("\uf06e",      "N")
-    t.add("\uf078",      "C")
-    t.add("\uf06f",      "O")
-    t.add("\uf070",      "P")
-    t.add("\uf072",      "R")
+    t.add(u"\uf061",      "A")
+    t.add(u"\uf062",      "B")
+    t.add(u"\uf067",      "G")
+    t.add(u"\uf064",      "D")
+    t.add(u"\uf065",      "E")
+    t.add(u"\uf07a",      "Z")
+    t.add(u"\uf068",      "H")
+    t.add(u"\uf071",      "Q")
+    t.add(u"\uf069",      "I")
+    t.add(u"\uf06b",      "K")
+    t.add(u"\uf06c",      "L")
+    t.add(u"\uf06d",      "M")
+    t.add(u"\uf06e",      "N")
+    t.add(u"\uf078",      "C")
+    t.add(u"\uf06f",      "O")
+    t.add(u"\uf070",      "P")
+    t.add(u"\uf072",      "R")
 
-    t.add("\uf056",      "S") # Final sigma
-    t.add("\uf056",      "S") # Final sigma
-    t.add("\uf073",      "S")
-    t.add("\uf073",      "S")
+    t.add(u"\uf056",      "S") # Final sigma
+    t.add(u"\uf056",      "S") # Final sigma
+    t.add(u"\uf073",      "S")
+    t.add(u"\uf073",      "S")
 
-    t.add("\uf074",      "T")
-    t.add("\uf075",      "")
-    t.add("\uf066",      "F") # Alternate phi
-    t.add("\uf06a",      "F") # Real phi
-    t.add("\uf063",      "X")
-    t.add("\uf079",      "Y")
-    t.add("\uf077",      "W")
+    t.add(u"\uf074",      "T")
+    t.add(u"\uf075",      "U")
+    t.add(u"\uf066",      "F") # Alternate phi
+    t.add(u"\uf06a",      "F") # Real phi
+    t.add(u"\uf063",      "X")
+    t.add(u"\uf079",      "Y")
+    t.add(u"\uf077",      "W")
 
-    t.add("\uf020",      " ")
-    t.add("\uf02c",      ",")
-    t.add("\uf02d",      "-")
-    t.add("(",           "[1")
-    t.add(")",           "]1")
+    t.add(u"\uf020",      " ")
+    t.add(u"\uf02c",      ",")
+    t.add(u"\uf02d",      "-")
+    t.add(u"(",           "[1")
+    t.add(u")",           "]1")
 
-    t.add("?",      "###?###")
-    t.add("s",      "###s###")
-    t.add("p",      "###p###")
+    t.add(u"?",      "###?###")
+    t.add(u"s",      "###s###")
+    t.add(u"p",      "###p###")
 
   
-    t.add("\n", "")
+    t.add(u"\n", "")
 
     return t
 
@@ -1828,426 +1835,426 @@ def symbol2BetaTrie():
 #    if b:
 #        print a.encode("utf-8"), b
 #        raise Exception
-#    print a.encode("utf-8")
+#    print(a.encode("utf-8"))
 
 def unicode2BetaTrie():
     t = Trie()
 
-    t.add("\n",        "")
+    t.add(u"\n",        "")
 
-    t.add("\u02bc",    "%30") # Modifier Letter Apostrophe
-    t.add("\u2021",    "%13") # Double Dagger
-    t.add("\u00b4",    "'")
-    t.add("\u201c",    "\"")
-    t.add("\u201d",    "\"")
-    t.add("\u2003",    " ")
-    t.add("\u002d",    "-") # Normal hyphen
-    t.add("\u0391",    "*A")
-    t.add("\u0392",    "*B")
-    t.add("\u0393",    "*G")
-    t.add("\u0394",    "*D")
-    t.add("\u0395",    "*E")
-    t.add("\u0396",    "*Z")
-    t.add("\u0397",    "*H")
-    t.add("\u0398",    "*Q")
-    t.add("\u0399",    "*I")
-    t.add("\u039A",    "*K")
-    t.add("\u039B",    "*L")
-    t.add("\u039C",    "*M")
-    t.add("\u039D",    "*N")
-    t.add("\u039E",    "*C")
-    t.add("\u039F",    "*O")
-    t.add("\u03A0",    "*P")
-    t.add("\u03A1",    "*R")
-    t.add("\u03A3",    "*S")
-    t.add("\u03A4",    "*T")
-    t.add("\u03A5",    "*")
-    t.add("\u03A6",    "*F")
-    t.add("\u03A7",    "*X")
-    t.add("\u03A8",    "*Y")
-    t.add("\u03A9",    "*W")
+    t.add(u"\u02bc",    "%30") # Modifier Letter Apostrophe
+    t.add(u"\u2021",    "%13") # Double Dagger
+    t.add(u"\u00b4",    "'")
+    t.add(u"\u201c",    "\"")
+    t.add(u"\u201d",    "\"")
+    t.add(u"\u2003",    " ")
+    t.add(u"\u002d",    "-") # Normal hyphen
+    t.add(u"\u0391",    "*A")
+    t.add(u"\u0392",    "*B")
+    t.add(u"\u0393",    "*G")
+    t.add(u"\u0394",    "*D")
+    t.add(u"\u0395",    "*E")
+    t.add(u"\u0396",    "*Z")
+    t.add(u"\u0397",    "*H")
+    t.add(u"\u0398",    "*Q")
+    t.add(u"\u0399",    "*I")
+    t.add(u"\u039A",    "*K")
+    t.add(u"\u039B",    "*L")
+    t.add(u"\u039C",    "*M")
+    t.add(u"\u039D",    "*N")
+    t.add(u"\u039E",    "*C")
+    t.add(u"\u039F",    "*O")
+    t.add(u"\u03A0",    "*P")
+    t.add(u"\u03A1",    "*R")
+    t.add(u"\u03A3",    "*S")
+    t.add(u"\u03A4",    "*T")
+    t.add(u"\u03A5",    "*U")
+    t.add(u"\u03A6",    "*F")
+    t.add(u"\u03A7",    "*X")
+    t.add(u"\u03A8",    "*Y")
+    t.add(u"\u03A9",    "*W")
 
-    t.add("\u03B1",    "A")
-    t.add("\u03B2",    "B")
-    t.add("\u03B3",    "G")
-    t.add("\u03B4",    "D")
-    t.add("\u03B5",    "E")
-    t.add("\u03B6",    "Z")
-    t.add("\u03B7",    "H")
-    t.add("\u03B8",    "Q")
-    t.add("\u03B9",    "I")
-    t.add("\u03BA",    "K")
-    t.add("\u03BB",    "L")
-    t.add("\u03BC",    "M")
-    t.add("\u03BD",    "N")
-    t.add("\u03BE",    "C")
-    t.add("\u03BF",    "O")
-    t.add("\u03C0",    "P")
-    t.add("\u03C1",    "R")
+    t.add(u"\u03B1",    "A")
+    t.add(u"\u03B2",    "B")
+    t.add(u"\u03B3",    "G")
+    t.add(u"\u03B4",    "D")
+    t.add(u"\u03B5",    "E")
+    t.add(u"\u03B6",    "Z")
+    t.add(u"\u03B7",    "H")
+    t.add(u"\u03B8",    "Q")
+    t.add(u"\u03B9",    "I")
+    t.add(u"\u03BA",    "K")
+    t.add(u"\u03BB",    "L")
+    t.add(u"\u03BC",    "M")
+    t.add(u"\u03BD",    "N")
+    t.add(u"\u03BE",    "C")
+    t.add(u"\u03BF",    "O")
+    t.add(u"\u03C0",    "P")
+    t.add(u"\u03C1",    "R")
 
-    t.add("\u002a",    "%2")  # Asterisk
-    t.add("\u03C2\n",    "S")
-    t.add("\u03C2\u0020",    "S ")
-    t.add("\u03C2\u002F",    "S%3")
-    t.add("\u03C2\u02b9",    "S#")
-    t.add("\u03C2\u02bc",    "S%30")
-    t.add("\u03C2\u03bc",    "SM") # Occurs in some stray word in Ulrik's Textus Receptus
-    t.add("\u03C2\u2019",    "S'")
-    t.add("\u03C2\u0374",    "S#") # final sigma + Kaira
-    t.add("\u03C2!",    "S!")
-    t.add("\u03C2,",    "S,")
-    t.add("\u03C2.",    "S.")
-    t.add("\u03C2\u00b7",    "S:")
-    t.add("\u03C2\u0387",    "S:")
-    t.add("\u03C2;",         "S;") # NOTE: This is not correct Greek encoding!
-    t.add("\u03C2\u037E",    "S;")
-    t.add("\u03C2\u2014",    "S_") # m-dash
-    t.add("\u03C2\u201d",    "S\"") # double quotation mark right
-    t.add("\u03C2]",    "S]")
-    t.add("\u03C2)",    "S]1")
-    t.add("\u03C2\u27e7",    "S]16")
-    t.add("\u03C2[",    "S[")
-    t.add("\u03C2-",    "S-")
-    t.add("\u03C2(",    "S[1")
-    t.add("\u03C2@",    "S@")
-    t.add("\u03C2_",    "S_")
-    t.add("\u03C2 (I)",    "S [1I]1")
-    t.add("\u03C2 (II)",    "S [1II]1")
-    t.add("\u03C2 (\u03b9)",    "S [1I]1")
-    t.add("\u03C2 (\u03b9\u03b9)",    "S [1II]1")
-    t.add("\u03C2 (1)",    "S [11]1")
-    t.add("\u03C2 (2)",    "S [12]1")
-    t.add("\u03C2_(I)",    "S_[1I]1")
-    t.add("\u03C2_(II)",    "S_[1II]1")
-    t.add("\u03C3",    "S")
+    t.add(u"\u002a",    "%2")  # Asterisk
+    t.add(u"\u03C2\n",    "S")
+    t.add(u"\u03C2\u0020",    "S ")
+    t.add(u"\u03C2\u002F",    "S%3")
+    t.add(u"\u03C2\u02b9",    "S#")
+    t.add(u"\u03C2\u02bc",    "S%30")
+    t.add(u"\u03C2\u03bc",    "SM") # Occurs in some stray word in Ulrik's Textus Receptus
+    t.add(u"\u03C2\u2019",    "S'")
+    t.add(u"\u03C2\u0374",    "S#") # final sigma + Kaira
+    t.add(u"\u03C2!",    "S!")
+    t.add(u"\u03C2,",    "S,")
+    t.add(u"\u03C2.",    "S.")
+    t.add(u"\u03C2\u00b7",    "S:")
+    t.add(u"\u03C2\u0387",    "S:")
+    t.add(u"\u03C2;",         "S;") # NOTE: This is not correct Greek encoding!
+    t.add(u"\u03C2\u037E",    "S;")
+    t.add(u"\u03C2\u2014",    "S_") # m-dash
+    t.add(u"\u03C2\u201d",    "S\"") # double quotation mark right
+    t.add(u"\u03C2]",    "S]")
+    t.add(u"\u03C2)",    "S]1")
+    t.add(u"\u03C2\u27e7",    "S]16")
+    t.add(u"\u03C2[",    "S[")
+    t.add(u"\u03C2-",    "S-")
+    t.add(u"\u03C2(",    "S[1")
+    t.add(u"\u03C2@",    "S@")
+    t.add(u"\u03C2_",    "S_")
+    t.add(u"\u03C2 (I)",    "S [1I]1")
+    t.add(u"\u03C2 (II)",    "S [1II]1")
+    t.add(u"\u03C2 (\u03b9)",    "S [1I]1")
+    t.add(u"\u03C2 (\u03b9\u03b9)",    "S [1II]1")
+    t.add(u"\u03C2 (1)",    "S [11]1")
+    t.add(u"\u03C2 (2)",    "S [12]1")
+    t.add(u"\u03C2_(I)",    "S_[1I]1")
+    t.add(u"\u03C2_(II)",    "S_[1II]1")
+    t.add(u"\u03C3",    "S")
 
-    t.add("\u03C4",    "T")
-    t.add("\u03C5",    "")
-    t.add("\u03C6",    "F")
-    t.add("\u03C7",    "X")
-    t.add("\u03C8",    "Y")
-    t.add("\u03C9",    "W")
+    t.add(u"\u03C4",    "T")
+    t.add(u"\u03C5",    "U")
+    t.add(u"\u03C6",    "F")
+    t.add(u"\u03C7",    "X")
+    t.add(u"\u03C8",    "Y")
+    t.add(u"\u03C9",    "W")
 
-    t.add("\u03CA",    "I+")
-    t.add("\u03CB",    "U+")
+    t.add(U"\u03CA",    "I+")
+    t.add(U"\u03CB",    "U+")
 
 
-    t.add("\u1F00",    "A)")
-    t.add("\u1F01",    "A(")
-    t.add("\u1F02",    "A)\\")
-    t.add("\u1F03",    "A(\\")
-    t.add("\u1F04",    "A)/")
-    t.add("\u1F05",    "A(/")
-    t.add("\u1F10",    "E)")
-    t.add("\u1F11",    "E(")
-    t.add("\u1F12",    "E)\\")
-    t.add("\u1F13",    "E(\\")
-    t.add("\u1F14",    "E)/")
-    t.add("\u1F15",    "E(/")
-    t.add("\u1F20",    "H)")
-    t.add("\u1F21",    "H(")
-    t.add("\u1F22",    "H)\\")
-    t.add("\u1F23",    "H(\\")
-    t.add("\u1F24",    "H)/")
-    t.add("\u1F25",    "H(/")
-    t.add("\u03B7\u0303", "H=") # U+0303 is the combining tilde...
-    t.add("\u1F30",    "I)")
-    t.add("\u1F31",    "I(")
-    t.add("\u1F32",    "I)\\")
-    t.add("\u1F33",    "I(\\")
-    t.add("\u1F34",    "I)/")
-    t.add("\u1F35",    "I(/")
-    t.add("\u1F40",    "O)")
-    t.add("\u1F41",    "O(")
-    t.add("\u1F42",    "O)\\")
-    t.add("\u1F43",    "O(\\")
-    t.add("\u1F43 ",    "O(\\ ")
-    t.add("\u1F44",    "O)/")
-    t.add("\u1F45",    "O(/")
-    t.add("\u1F50",    "U)")
-    t.add("\u1F51",    "U(")
-    t.add("\u1F52",    "U)\\")
-    t.add("\u1F53",    "U(\\")
-    t.add("\u1F54",    "U)/")
-    t.add("\u1F55",    "U(/")
-    t.add("\u1F60",    "W)")
-    t.add("\u1F61",    "W(")
-    t.add("\u1F62",    "W)\\")
-    t.add("\u1F63",    "W(\\")
-    t.add("\u1F64",    "W)/")
-    t.add("\u1F65",    "W(/")
+    t.add(u"\u1F00",    "A)")
+    t.add(u"\u1F01",    "A(")
+    t.add(u"\u1F02",    "A)\\")
+    t.add(u"\u1F03",    "A(\\")
+    t.add(u"\u1F04",    "A)/")
+    t.add(u"\u1F05",    "A(/")
+    t.add(u"\u1F10",    "E)")
+    t.add(u"\u1F11",    "E(")
+    t.add(u"\u1F12",    "E)\\")
+    t.add(u"\u1F13",    "E(\\")
+    t.add(u"\u1F14",    "E)/")
+    t.add(u"\u1F15",    "E(/")
+    t.add(u"\u1F20",    "H)")
+    t.add(u"\u1F21",    "H(")
+    t.add(u"\u1F22",    "H)\\")
+    t.add(u"\u1F23",    "H(\\")
+    t.add(u"\u1F24",    "H)/")
+    t.add(u"\u1F25",    "H(/")
+    t.add(u"\u03B7\u0303", "H=") # U+0303 is the combining tilde...
+    t.add(u"\u1F30",    "I)")
+    t.add(u"\u1F31",    "I(")
+    t.add(u"\u1F32",    "I)\\")
+    t.add(u"\u1F33",    "I(\\")
+    t.add(u"\u1F34",    "I)/")
+    t.add(u"\u1F35",    "I(/")
+    t.add(u"\u1F40",    "O)")
+    t.add(u"\u1F41",    "O(")
+    t.add(u"\u1F42",    "O)\\")
+    t.add(u"\u1F43",    "O(\\")
+    t.add(u"\u1F43 ",    "O(\\ ")
+    t.add(u"\u1F44",    "O)/")
+    t.add(u"\u1F45",    "O(/")
+    t.add(u"\u1F50",    "U)")
+    t.add(u"\u1F51",    "U(")
+    t.add(u"\u1F52",    "U)\\")
+    t.add(u"\u1F53",    "U(\\")
+    t.add(u"\u1F54",    "U)/")
+    t.add(u"\u1F55",    "U(/")
+    t.add(u"\u1F60",    "W)")
+    t.add(u"\u1F61",    "W(")
+    t.add(u"\u1F62",    "W)\\")
+    t.add(u"\u1F63",    "W(\\")
+    t.add(u"\u1F64",    "W)/")
+    t.add(u"\u1F65",    "W(/")
 
-    t.add("\u1F06",    "A)=")
-    t.add("\u1F07",    "A(=")
-    t.add("\u1F26",    "H)=")
-    t.add("\u1F27",    "H(=")
-    t.add("\u1F36",    "I)=")
-    t.add("\u1F37",    "I(=")
-    t.add("\u1F56",    "U)=")
-    t.add("\u1F57",    "U(=")
-    t.add("\u1F66",    "W)=")
-    t.add("\u1F67",    "W(=")
+    t.add(u"\u1F06",    "A)=")
+    t.add(u"\u1F07",    "A(=")
+    t.add(u"\u1F26",    "H)=")
+    t.add(u"\u1F27",    "H(=")
+    t.add(u"\u1F36",    "I)=")
+    t.add(u"\u1F37",    "I(=")
+    t.add(u"\u1F56",    "U)=")
+    t.add(u"\u1F57",    "U(=")
+    t.add(u"\u1F66",    "W)=")
+    t.add(u"\u1F67",    "W(=")
 
-    t.add("\u1F08",    "*)A")
-    t.add("\u1F09",    "*(A")
-    t.add("\u1F0B",    "*(\A")  
-    t.add("\u1FCE\u0391",    "*)/A")
-    t.add("\u1F0C",    "*)/A")
-    t.add("\u1F0D",    "*(/A")
-    t.add("\u1F80",        "A)|")
-    t.add("\u1F8D",        "*(/A|")
-    t.add("\u1F0D\u0345",        "*(/A|")
-    t.add("\u1F09\u0301\u0345",  "*(/A|")
-    t.add("\u1F0E",    "*)=A")
-    t.add("\u1FCE\u0391",    "*)/A")
-    t.add("\u1FCF\u0391", "*)=A")
-    t.add("\u1FDD\u0391",    "*(\\A")
-    t.add("\u1FDE\u0391",    "*(/A")
-    t.add("\u1FDF\u0391",    "*(=A")
-    t.add("\u1F0F",    "*(=A")
-    t.add("\u1F18",    "*)E")
-    t.add("\u1F19",    "*(E")
+    t.add(u"\u1F08",    "*)A")
+    t.add(u"\u1F09",    "*(A")
+    t.add(u"\u1F0B",    "*(\A")  
+    t.add(u"\u1FCE\u0391",    "*)/A")
+    t.add(u"\u1F0C",    "*)/A")
+    t.add(u"\u1F0D",    "*(/A")
+    t.add(u"\u1F80",        "A)|")
+    t.add(u"\u1F8D",        "*(/A|")
+    t.add(u"\u1F0D\u0345",        "*(/A|")
+    t.add(u"\u1F09\u0301\u0345",  "*(/A|")
+    t.add(u"\u1F0E",    "*)=A")
+    t.add(u"\u1FCE\u0391",    "*)/A")
+    t.add(u"\u1FCF\u0391", "*)=A")
+    t.add(u"\u1FDD\u0391",    "*(\\A")
+    t.add(u"\u1FDE\u0391",    "*(/A")
+    t.add(u"\u1FDF\u0391",    "*(=A")
+    t.add(u"\u1F0F",    "*(=A")
+    t.add(u"\u1F18",    "*)E")
+    t.add(u"\u1F19",    "*(E")
     #
-    t.add("\u1F1A",    "*)\E")
-    t.add("\u1F1B",    "*(\E")
-    t.add("\u1F1C",    "*)/E")
-    t.add("\u1F1D",    "*(/E")
-    t.add("\u1FCE\u0395",    "*)/E")
-    t.add("\u1FDE\u0395",    "*(/E")
-    t.add("\u1FDD\u0395",    "*(\\E")
+    t.add(u"\u1F1A",    "*)\E")
+    t.add(u"\u1F1B",    "*(\E")
+    t.add(u"\u1F1C",    "*)/E")
+    t.add(u"\u1F1D",    "*(/E")
+    t.add(u"\u1FCE\u0395",    "*)/E")
+    t.add(u"\u1FDE\u0395",    "*(/E")
+    t.add(u"\u1FDD\u0395",    "*(\\E")
 
-    t.add("\u1F28",    "*)H")
-    t.add("\u1F29",    "*(H")
-    t.add("\u1F2A",    "*)\\H")
-    t.add("\u1F2B",    "*(\\H")
+    t.add(u"\u1F28",    "*)H")
+    t.add(u"\u1F29",    "*(H")
+    t.add(u"\u1F2A",    "*)\\H")
+    t.add(u"\u1F2B",    "*(\\H")
     #
-    t.add("\u1FCE\u0397",    "*)/H")
-    t.add("\u1FDF\u0397",    "*(=H")
-    t.add("\u1FDE\u0397",    "*(/H")
-    t.add("\u1F2C",    "*)/H")
-    t.add("\u1F9C",    "*)/H|")
-    t.add("\u1F2C\u0345",          "*)/H|")
-    t.add("\u1F28\u0301\u0345",    "*)/H|")
-    t.add("\u1F2D",    "*(/H")
+    t.add(u"\u1FCE\u0397",    "*)/H")
+    t.add(u"\u1FDF\u0397",    "*(=H")
+    t.add(u"\u1FDE\u0397",    "*(/H")
+    t.add(u"\u1F2C",    "*)/H")
+    t.add(u"\u1F9C",    "*)/H|")
+    t.add(u"\u1F2C\u0345",          "*)/H|")
+    t.add(u"\u1F28\u0301\u0345",    "*)/H|")
+    t.add(u"\u1F2D",    "*(/H")
     #
-    t.add("\u1F2E",    "*)=H")
-    t.add("\u1F2F",    "*(=H")
-    t.add("\u1FCE\u0397",    "*)/H")
-    t.add("\u1FCF\u0397", "*)=H")
-    t.add("\u1FCE\u0399",    "*)/I")
-    t.add("\u1F38",    "*)I")
-    t.add("\u1F39",    "*(I")
-    t.add("\u1F3A",    "*)\\I")
-    t.add("\u1F3B",    "*(/I")
-    t.add("\u1F3C",    "*)/I")  
-    t.add("\u1F3D",    "*(/I")
-    t.add("\u1FDE\u0399",    "*(/I")
-    t.add("\u1F3E",    "*)=I")
-    t.add("\u1F3F",    "*(=I")
+    t.add(u"\u1F2E",    "*)=H")
+    t.add(u"\u1F2F",    "*(=H")
+    t.add(u"\u1FCE\u0397",    "*)/H")
+    t.add(u"\u1FCF\u0397", "*)=H")
+    t.add(u"\u1FCE\u0399",    "*)/I")
+    t.add(u"\u1F38",    "*)I")
+    t.add(u"\u1F39",    "*(I")
+    t.add(u"\u1F3A",    "*)\\I")
+    t.add(u"\u1F3B",    "*(/I")
+    t.add(u"\u1F3C",    "*)/I")  
+    t.add(u"\u1F3D",    "*(/I")
+    t.add(u"\u1FDE\u0399",    "*(/I")
+    t.add(u"\u1F3E",    "*)=I")
+    t.add(u"\u1F3F",    "*(=I")
     #
-    t.add("\u1F48",    "*)O")
-    t.add("\u1F49",    "*(O")
-    t.add("\u1FCE\u039f",    "*)/O")
-    t.add("\u1FDD\u039F",    "*(\\O")
-    t.add("\u1FDE\u039F",    "*(/O")
+    t.add(u"\u1F48",    "*)O")
+    t.add(u"\u1F49",    "*(O")
+    t.add(u"\u1FCE\u039f",    "*)/O")
+    t.add(u"\u1FDD\u039F",    "*(\\O")
+    t.add(u"\u1FDE\u039F",    "*(/O")
     #
     #
-    t.add("\u1F4A",    "*)\\O")
-    t.add("\u1F4B",    "*(\\O")
-    t.add("\u1F4C",    "*)/O")
-    t.add("\u1F4D",    "*(/O")
+    t.add(u"\u1F4A",    "*)\\O")
+    t.add(u"\u1F4B",    "*(\\O")
+    t.add(u"\u1F4C",    "*)/O")
+    t.add(u"\u1F4D",    "*(/O")
     #
-    t.add("\u1F59",    "*(")
-    t.add("\u1F59",    "*(")
-    t.add("\u1F5B",    "*(\\")
-    t.add("\u1F5D",    "*(/")
-    t.add("\u1FDE\u03a5",    "*(/")
+    t.add(u"\u1F59",    "*(U")
+    t.add(u"\u1F59",    "*(U")
+    t.add(u"\u1F5B",    "*(\\U")
+    t.add(u"\u1F5D",    "*(/U")
+    t.add(u"\u1FDE\u03a5",    "*(/U")
     #
-    t.add("\u1F5F",    "*(=")
+    t.add(u"\u1F5F",    "*(=U")
     
-    t.add("\u1F68",    "*)W")
-    t.add("\u1F69",    "*(W")
+    t.add(u"\u1F68",    "*)W")
+    t.add(u"\u1F69",    "*(W")
     #
     #
-    t.add("\u1F6A",    "*)\\W")
-    t.add("\u1F6B",    "*(\\W")
-    t.add("\u1F6C",    "*)/W")
-    t.add("\u1F6D",    "*(/W")
-    t.add("\u1FDE\u03a9", "*(/W")
-    t.add("\u1F6E",    "*)=W")
-    t.add("\u1FCD\u03a9",    "*)\\W")
-    t.add("\u1FCE\u03a9",    "*)/W")
-    t.add("\u1FCF\u03a9", "*)=W")
-    t.add("\u1F6F",    "*(=W")
-    t.add("\u1FDF\u03a9",    "*(=W")
-    t.add("\u1FA4",              "W)/|")
-    t.add("\u1FA6",              "W)=|")
-    t.add("\u1FAF",              "*(=W|")
-    t.add("\u1F6F\u0345",        "*(=W|")
-    t.add("\u1F69\u0342\u0345",  "*(=W|")
+    t.add(u"\u1F6A",    "*)\\W")
+    t.add(u"\u1F6B",    "*(\\W")
+    t.add(u"\u1F6C",    "*)/W")
+    t.add(u"\u1F6D",    "*(/W")
+    t.add(u"\u1FDE\u03a9", "*(/W")
+    t.add(u"\u1F6E",    "*)=W")
+    t.add(u"\u1FCD\u03a9",    "*)\\W")
+    t.add(u"\u1FCE\u03a9",    "*)/W")
+    t.add(u"\u1FCF\u03a9", "*)=W")
+    t.add(u"\u1F6F",    "*(=W")
+    t.add(u"\u1FDF\u03a9",    "*(=W")
+    t.add(u"\u1FA4",              "W)/|")
+    t.add(u"\u1FA6",              "W)=|")
+    t.add(u"\u1FAF",              "*(=W|")
+    t.add(u"\u1F6F\u0345",        "*(=W|")
+    t.add(u"\u1F69\u0342\u0345",  "*(=W|")
 
-    t.add("\u1F6E",    "*)=W")
-    t.add("\u1F6F",    "*(=W")
+    t.add(u"\u1F6E",    "*)=W")
+    t.add(u"\u1F6F",    "*(=W")
 
-    t.add("\u1F70",    "A\\")
-    t.add("\u03AC",    "A/") # NOTE: Is monotonic Greek
-    t.add("\u1F71",    "A/")
-    t.add("\u1F72",    "E\\")
-    t.add("\u03AD",    "E/") # NOTE: Is monotonic Greek
-    t.add("\u1F73",    "E/")
-    t.add("\u1F74",    "H\\")
-    t.add("\u03AE",    "H/") # NOTE: Is monotonic Greek
-    t.add("\u1F75",    "H/")
-    t.add("\u1F76",    "I\\")
-    t.add("\u03AF",    "I/") # NOTE: Is monotonic Greek
-    t.add("\u1F77",    "I/")
-    t.add("\u1F78",    "O\\")
-    t.add("\u03CC",    "O/") # NOTE: Is monotonic Greek
-    t.add("\u1F79",    "O/")
-    t.add("\u1F7A",    "U\\")
-    t.add("\u03CD",    "U/") # NOTE: Is monotonic Greek
-    t.add("\u1F7B",    "U/")
-    t.add("\u1F7C",    "W\\") 
-    t.add("\u03CE",    "W/") # NOTE: Is monotonic Greek
-    t.add("\u1F7D",    "W/")
+    t.add(u"\u1F70",    "A\\")
+    t.add(u"\u03AC",    "A/") # NOTE: Is monotonic Greek
+    t.add(u"\u1F71",    "A/")
+    t.add(u"\u1F72",    "E\\")
+    t.add(u"\u03AD",    "E/") # NOTE: Is monotonic Greek
+    t.add(u"\u1F73",    "E/")
+    t.add(u"\u1F74",    "H\\")
+    t.add(u"\u03AE",    "H/") # NOTE: Is monotonic Greek
+    t.add(u"\u1F75",    "H/")
+    t.add(u"\u1F76",    "I\\")
+    t.add(u"\u03AF",    "I/") # NOTE: Is monotonic Greek
+    t.add(u"\u1F77",    "I/")
+    t.add(u"\u1F78",    "O\\")
+    t.add(u"\u03CC",    "O/") # NOTE: Is monotonic Greek
+    t.add(u"\u1F79",    "O/")
+    t.add(u"\u1F7A",    "U\\")
+    t.add(u"\u03CD",    "U/") # NOTE: Is monotonic Greek
+    t.add(u"\u1F7B",    "U/")
+    t.add(u"\u1F7C",    "W\\") 
+    t.add(u"\u03CE",    "W/") # NOTE: Is monotonic Greek
+    t.add(u"\u1F7D",    "W/")
 
-    t.add("\u1F84",    "A)/|")
-    t.add("\u1F85",    "A(/|")
-    t.add("\u1F86",    "A)=|")
-    t.add("\u1F90",    "H)|")
-    t.add("\u1F91",    "H(|")
-    t.add("\u1F94",    "H)/|")
-    t.add("\u1F96",    "H)=|")
-    t.add("\u1F97",    "H(=|")
-    t.add("\u1FA0",    "W)|")
-    t.add("\u1FA7",    "W(=|")
+    t.add(u"\u1F84",    "A)/|")
+    t.add(u"\u1F85",    "A(/|")
+    t.add(u"\u1F86",    "A)=|")
+    t.add(u"\u1F90",    "H)|")
+    t.add(u"\u1F91",    "H(|")
+    t.add(u"\u1F94",    "H)/|")
+    t.add(u"\u1F96",    "H)=|")
+    t.add(u"\u1F97",    "H(=|")
+    t.add(u"\u1FA0",    "W)|")
+    t.add(u"\u1FA7",    "W(=|")
 
-    t.add("\u1FB6",    "A=")
-    t.add("\u1FC6",    "H=")
-    t.add("\u1FD6",    "I=")
-    t.add("\u1FE6",    "U=")
-    t.add("\u1FE7",    "U=+")
-    t.add("\u1FF6",    "W=")
+    t.add(u"\u1FB6",    "A=")
+    t.add(u"\u1FC6",    "H=")
+    t.add(u"\u1FD6",    "I=")
+    t.add(u"\u1FE6",    "U=")
+    t.add(u"\u1FE7",    "U=+")
+    t.add(u"\u1FF6",    "W=")
 
-    t.add("\u1FD2",    "I\\+")
-    t.add("\u0390",    "I/+") # Note: This is monotonic Greek
-    t.add("\u1FD3",    "I/+")
-    t.add("\u1FE2",    "U\\+")
-    t.add("\u03B0",    "U/+") # Note: This is monotonic Greek
-    t.add("\u1FE3",    "U/+")
+    t.add(u"\u1FD2",    "I\\+")
+    t.add(u"\u0390",    "I/+") # Note: This is monotonic Greek
+    t.add(u"\u1FD3",    "I/+")
+    t.add(u"\u1FE2",    "U\\+")
+    t.add(u"\u03B0",    "U/+") # Note: This is monotonic Greek
+    t.add(u"\u1FE3",    "U/+")
 
-    t.add("\u1FB3",    "A|")
-    t.add("\u1FB4",    "A/|")
-    t.add("\u1FC3",    "H|")
-    t.add("\u1FC4",    "H/|")
-    t.add("\u1FF3",    "W|")
-    t.add("\u1FF4",    "W/|")
+    t.add(u"\u1FB3",    "A|")
+    t.add(u"\u1FB4",    "A/|")
+    t.add(u"\u1FC3",    "H|")
+    t.add(u"\u1FC4",    "H/|")
+    t.add(u"\u1FF3",    "W|")
+    t.add(u"\u1FF4",    "W/|")
 
-    t.add("\u1FB7",    "A=|")
-    t.add("\u1FC7",    "H=|")
-    t.add("\u1FF7",    "W=|")
+    t.add(u"\u1FB7",    "A=|")
+    t.add(u"\u1FC7",    "H=|")
+    t.add(u"\u1FF7",    "W=|")
 
-    t.add("\u1FE5",    "R(")
-    t.add("\u1FEC",    "*(R")
+    t.add(u"\u1FE5",    "R(")
+    t.add(u"\u1FEC",    "*(R")
 
-    t.add("\u1FE4",    "R)")
-    t.add("\u03A1\u0313",    "*R)")
-    t.add("\u03A1\u0313",    "*)R")
+    t.add(u"\u1FE4",    "R)")
+    t.add(u"\u03A1\u0313",    "*R)")
+    t.add(u"\u03A1\u0313",    "*)R")
 
-    t.add(" (I)", " [1I]1")
-    t.add(" (II)", " [1II]1")
-    t.add(" (\u1f43 ", " [1O(\\ ")
-    t.add(" (\u03b9)", " [1I]1")
-    t.add(" (\u03b9\u03b9)", " [1II]1")
-    t.add(" (1)", " [11]1")
-    t.add(" (2)", " [12]1")
-    t.add(" (", " [1")
+    t.add(u" (I)", " [1I]1")
+    t.add(u" (II)", " [1II]1")
+    t.add(u" (\u1f43 ", " [1O(\\ ")
+    t.add(u" (\u03b9)", " [1I]1")
+    t.add(u" (\u03b9\u03b9)", " [1II]1")
+    t.add(u" (1)", " [11]1")
+    t.add(u" (2)", " [12]1")
+    t.add(u" (", " [1")
 
-    t.add("\u00a0", " ")
+    t.add(u"\u00a0", " ")
 
 
-    #    t.add("~",    "~")
-    #    t.add("-",    "-")
+    #    t.add(u"~",    "~")
+    #    t.add(u"-",    "-")
 
     # Hyphen is U+2010, according to the TLG BETA code manual quick
     # reference (footnote 13 on page 4).
-    t.add("\u2010", "-")
+    t.add(u"\u2010", "-")
 
     # But we should also treat the normal hyphen (U+002D)
-    t.add("-", "-")
+    t.add(u"-", "-")
     
     
-    t.add("0",    "0")
-    t.add("1",    "1")
-    t.add("2",    "2")
-    t.add("3",    "3")
-    t.add("4",    "4")
-    t.add("5",    "5")
-    t.add("6",    "6")
-    t.add("7",    "7")
-    t.add("8",    "8")
-    t.add("9",    "9")
+    t.add(u"0",    "0")
+    t.add(u"1",    "1")
+    t.add(u"2",    "2")
+    t.add(u"3",    "3")
+    t.add(u"4",    "4")
+    t.add(u"5",    "5")
+    t.add(u"6",    "6")
+    t.add(u"7",    "7")
+    t.add(u"8",    "8")
+    t.add(u"9",    "9")
     
-    t.add("@",    "@")
-    t.add("$",    "$")
+    t.add(u"@",    "@")
+    t.add(u"$",    "$")
     
-    t.add("\u002f",    "%3") # Solidus ‣ Slash
+    t.add(u"\u002f",    "%3") # Solidus ‣ Slash
 
     
-    t.add(" ",    " ")
+    t.add(u" ",    " ")
     
-    t.add(".",    ".")
-    t.add(",",    ",")
-    t.add("\u1ffe", "(") # GREEK DASIA
-    t.add("\u1ffe\u0391", "*(A") # GREEK DASIA + GREEK CAPITAL ALPHA
-    t.add("\u1ffe\u0395", "*(E") # GREEK DASIA + GREEK CAPITAL EPSILON
-    t.add("\u1ffe\u0397", "*(H") # GREEK DASIA + GREEK CAPITAL ETA
-    t.add("\u1ffe\u0399", "*(I") # GREEK DASIA + GREEK CAPITAL IOTA
-    t.add("\u1ffe\u039F", "*(O") # GREEK DASIA + GREEK CAPITAL OMICRON
-    t.add("\u1ffe\u03A5", "*(") # GREEK DASIA + GREEK CAPITAL UPSILON
-    t.add("\u1ffe\u03A1", "*(R") # GREEK DASIA + GREEK CAPITAL RHO
-    t.add("\u1ffe\u03A9", "*(W") # GREEK DASIA + GREEK CAPITAL OMEGA
-    t.add("\u1FBF",    "'") # GREEK PSILI # NOTE: It could also denote PSILI, but it is used in AGNT to refer to apostrophe
-    t.add("\u0315",    "'") # COMBINING COMMA ABOVE RIGHT
-    t.add("'",    "'")
-    t.add("\u02B9",    "#") # Kaira (numerical apostrophe) (from MODIFIER LETTER PRIME)
-    t.add("\u0374",    "#") # Kaira (numerical apostrophe)
-    t.add("\u2013",    "%19") # en-dash
-    t.add("\u2014",    "_") # em-dash
-    t.add("\u2019",    "'") # right quotation mark
-    t.add("\u1FBD",    "'") # koronis
-    t.add("\u00b7",    ":") # NOTE: This is not correct Greek encoding!
-    t.add("\u0387",    ":")
-    t.add("\u037e",    ";")
-    t.add(";",         ";") # NOTE: This is not correct Greek encoding!
-    t.add("\u0313",    "'") # Combining breathing... used in ANLEX for apostrophe... FIXME: Do it right!
-    t.add("\u0314",    "(") # COMBINING REVERSED COMMA ABOVE ... used in AGNT for something which it shouldn't be used for.
-    t.add("_",    "_")
-    t.add("-",    "-")
-    t.add("!",    "!")
-    t.add("\u0028", "[1")
+    t.add(u".",    ".")
+    t.add(u",",    ",")
+    t.add(u"\u1ffe", "(") # GREEK DASIA
+    t.add(u"\u1ffe\u0391", "*(A") # GREEK DASIA + GREEK CAPITAL ALPHA
+    t.add(u"\u1ffe\u0395", "*(E") # GREEK DASIA + GREEK CAPITAL EPSILON
+    t.add(u"\u1ffe\u0397", "*(H") # GREEK DASIA + GREEK CAPITAL ETA
+    t.add(u"\u1ffe\u0399", "*(I") # GREEK DASIA + GREEK CAPITAL IOTA
+    t.add(u"\u1ffe\u039F", "*(O") # GREEK DASIA + GREEK CAPITAL OMICRON
+    t.add(u"\u1ffe\u03A5", "*(U") # GREEK DASIA + GREEK CAPITAL UPSILON
+    t.add(u"\u1ffe\u03A1", "*(R") # GREEK DASIA + GREEK CAPITAL RHO
+    t.add(u"\u1ffe\u03A9", "*(W") # GREEK DASIA + GREEK CAPITAL OMEGA
+    t.add(u"\u1FBF",    "'") # GREEK PSILI # NOTE: It could also denote PSILI, but it is used in AGNT to refer to apostrophe
+    t.add(u"\u0315",    "'") # COMBINING COMMA ABOVE RIGHT
+    t.add(u"'",    "'")
+    t.add(u"\u02B9",    "#") # Kaira (numerical apostrophe) (from MODIFIER LETTER PRIME)
+    t.add(u"\u0374",    "#") # Kaira (numerical apostrophe)
+    t.add(u"\u2013",    "%19") # en-dash
+    t.add(u"\u2014",    "_") # em-dash
+    t.add(u"\u2019",    "'") # right quotation mark
+    t.add(u"\u1FBD",    "'") # koronis
+    t.add(u"\u00b7",    ":") # NOTE: This is not correct Greek encoding!
+    t.add(u"\u0387",    ":")
+    t.add(u"\u037e",    ";")
+    t.add(u";",         ";") # NOTE: This is not correct Greek encoding!
+    t.add(u"\u0313",    "'") # Combining breathing... used in ANLEX for apostrophe... FIXME: Do it right!
+    t.add(u"\u0314",    "(") # COMBINING REVERSED COMMA ABOVE ... used in AGNT for something which it shouldn't be used for.
+    t.add(u"_",    "_")
+    t.add(u"-",    "-")
+    t.add(u"!",    "!")
+    t.add(u"\u0028", "[1")
     
 
-    t.add("[",    "[")
-    t.add("]",    "]")
+    t.add(u"[",    "[")
+    t.add(u"]",    "]")
 
     # Double square brackets in one glyph
-    t.add("\u301a", "[16")
-    t.add("\u27e6", "[16")
-    t.add("\u301b", "]16")
-    t.add("\u27e7", "]16")
+    t.add(u"\u301a", "[16")
+    t.add(u"\u27e6", "[16")
+    t.add(u"\u301b", "]16")
+    t.add(u"\u27e7", "]16")
 
-    t.add(")",    "]1")
-    t.add("<",    "[2")
-    t.add(">",    "]2")
-    t.add("(1)",    "[1I]1")
-    t.add("(2)",    "[1II]1")
-    t.add("(",    "[1")
+    t.add(u")",    "]1")
+    t.add(u"<",    "[2")
+    t.add(u">",    "]2")
+    t.add(u"(1)",    "[1I]1")
+    t.add(u"(2)",    "[1II]1")
+    t.add(u"(",    "[1")
 
-    t.add("\u03da",    "*#2")  # GREEK (CAPITAL) LETTER STIGMA
-    t.add("\u03db",    "#2")   # GREEK SMALL LETTER STIGMA
-    t.add("\u03dc",    "*V")   # GREEK CAPITAL LETTER DIGAMMA
-    t.add("\u03dd",    "V")    # GREEK SMALL LETTER DIGAMMA
+    t.add(u"\u03da",    "*#2")  # GREEK (CAPITAL) LETTER STIGMA
+    t.add(u"\u03db",    "#2")   # GREEK SMALL LETTER STIGMA
+    t.add(u"\u03dc",    "*V")   # GREEK CAPITAL LETTER DIGAMMA
+    t.add(u"\u03dd",    "V")    # GREEK SMALL LETTER DIGAMMA
     
     
     return t
@@ -2256,152 +2263,152 @@ def unicode2BetaTrie():
 def accordance2UnicodeTrie():
     t = Trie()
     
-    t.add("A",     "\u0391")  # *A
-    t.add("B",     "\u0392")  # *B
-    t.add("G",     "\u0393")  # *G
-    t.add("D",     "\u0394")  # *D
-    t.add("E",     "\u0395")  # *E
-    t.add("Z",     "\u0396")  # *Z
-    t.add("Q",     "\u0398")  # *Q
-    t.add("K",     "\u039A")  # *K
-    t.add("L",     "\u039B")  # *L
-    t.add("M",     "\u039C")  # *M
-    t.add("N",     "\u039D")  # *N
-    t.add("X",     "\u039E")  # *C
-    t.add("O",     "\u039F")  # *O
-    t.add("P",     "\u03A0")  # *P
-    t.add("S",     "\u03A3")  # *S
-    t.add("T",     "\u03A4")  # *T
-    t.add("F",     "\u03A6")  # *F
-    t.add("C",     "\u03A7")  # *X
+    t.add(u"A",     "\u0391")  # *A
+    t.add(u"B",     "\u0392")  # *B
+    t.add(u"G",     "\u0393")  # *G
+    t.add(u"D",     "\u0394")  # *D
+    t.add(u"E",     "\u0395")  # *E
+    t.add(u"Z",     "\u0396")  # *Z
+    t.add(u"Q",     "\u0398")  # *Q
+    t.add(u"K",     "\u039A")  # *K
+    t.add(u"L",     "\u039B")  # *L
+    t.add(u"M",     "\u039C")  # *M
+    t.add(u"N",     "\u039D")  # *N
+    t.add(u"X",     "\u039E")  # *C
+    t.add(u"O",     "\u039F")  # *O
+    t.add(u"P",     "\u03A0")  # *P
+    t.add(u"S",     "\u03A3")  # *S
+    t.add(u"T",     "\u03A4")  # *T
+    t.add(u"F",     "\u03A6")  # *F
+    t.add(u"C",     "\u03A7")  # *X
     
-    #t.add("\u03A8",    "*Y")
-    #t.add("\u03A9",    "*W")
+    #t.add(u"\u03A8",    "*Y")
+    #t.add(u"\u03A9",    "*W")
     
-    t.add("a",     "\u03B1")  # A
-    t.add("b",     "\u03B2")  # B
-    t.add("g",     "\u03B3")  # G
-    t.add("d",     "\u03B4")  # D
-    t.add("e",     "\u03B5")  # E
-    t.add("z",     "\u03B6")  # Z
-    t.add("h",     "\u03B7")  # H
-    t.add("q",     "\u03B8")  # Q
-    t.add("i",     "\u03B9")  # I
-    t.add("k",     "\u03BA")  # K
-    t.add("l",     "\u03BB")  # L
-    t.add("m",     "\u03BC")  # M
-    t.add("n",     "\u03BD")  # N
-    t.add("x",     "\u03BE")  # C
-    t.add("o",     "\u03BF")  # O
-    t.add("p",     "\u03C0")  # P
-    t.add("r",     "\u03C1")  # R
-    t.add("§",     "\u03C2")  # S final
-    t.add("s",     "\u03C3")  # S
-    t.add("t",     "\u03C4")  # T
-    t.add("",     "\u03C5")  # U
-    t.add("f",     "\u03C6")  # F
-    t.add("c",     "\u03C7")  # X
-    t.add("y",     "\u03C8")  # Y
-    t.add("w",     "\u03C9")  # W
+    t.add(u"a",     "\u03B1")  # A
+    t.add(u"b",     "\u03B2")  # B
+    t.add(u"g",     "\u03B3")  # G
+    t.add(u"d",     "\u03B4")  # D
+    t.add(u"e",     "\u03B5")  # E
+    t.add(u"z",     "\u03B6")  # Z
+    t.add(u"h",     "\u03B7")  # H
+    t.add(u"q",     "\u03B8")  # Q
+    t.add(u"i",     "\u03B9")  # I
+    t.add(u"k",     "\u03BA")  # K
+    t.add(u"l",     "\u03BB")  # L
+    t.add(u"m",     "\u03BC")  # M
+    t.add(u"n",     "\u03BD")  # N
+    t.add(u"x",     "\u03BE")  # C
+    t.add(u"o",     "\u03BF")  # O
+    t.add(u"p",     "\u03C0")  # P
+    t.add(u"r",     "\u03C1")  # R
+    t.add(u"§",     "\u03C2")  # S final
+    t.add(u"s",     "\u03C3")  # S
+    t.add(u"t",     "\u03C4")  # T
+    t.add(u"u",     "\u03C5")  # U
+    t.add(u"f",     "\u03C6")  # F
+    t.add(u"c",     "\u03C7")  # X
+    t.add(u"y",     "\u03C8")  # Y
+    t.add(u"w",     "\u03C9")  # W
     
-    t.add("aî",    "\u1F00")  # A)
-    t.add("að",    "\u1F01")  # A(
-    t.add("aà",    "\u1F04")  # A)/
-    t.add("aâ",    "\u1F05")  # A(/
-    t.add("a¡",    "\u1F06")  # A)=
-    t.add("ÆA",    "\u1F08")  # )*A
-    t.add("ïA",    "\u1F09")  # (*A
-    t.add("ÚA",    "\u1F0C")  # )/*A
-    t.add("ÝA",    "\u1F0D")  # (/*A
-    t.add("ÆAv",   "\u1F0E")  # *)=A
-    t.add("eú",    "\u1F10")  # E)
-    t.add("eû",    "\u1F11")  # E(
-    t.add("e¦",    "\u1F14")  # E)/
-    t.add("e¼",    "\u1F15")  # E(/
-    t.add("ÆE",    "\u1F18")  # *)E
-    t.add("ïE",    "\u1F19")  # *(E
-    t.add("EÁ",    "\u1F1C")  # *)/E
-    t.add("ÝE",    "\u1F1D")  # *(/E
-    t.add("hj",    "\u1F20")  # H)
-    t.add("hJ",    "\u1F21")  # H(
-    t.add("hÁ",    "\u1F24")  # H)/
-    t.add("h¢",    "\u1F25")  # H(/
-    t.add("hª",    "\u1F26")  # H)=
-    t.add("h°",    "\u1F27")  # H(=
-    t.add("ÆH",    "\u1F28")  # *H)
-    t.add("ïH",    "\u1F29")  # *H(
-    t.add("HÁ",    "\u1F2C")  # *)/H
-    t.add("iú",    "\u1F30")  # I)
-    t.add("iû",    "\u1F31")  # I(
-    t.add("i¦",    "\u1F34")  # I)/
-    t.add("i¼",    "\u1F35")  # I(/
-    t.add("i¥",    "\u1F36")  # I)=
-    t.add("iÐ",    "\u1F37")  # I(=
-    t.add("ÆI",    "\u1F38")  # *)I
-    t.add("ïI",    "\u1F39")  # *(I
-    t.add("oj",    "\u1F40")  # O)
-    t.add("oJ",    "\u1F41")  # O(
-    t.add("oÁ",    "\u1F44")  # O)/
-    t.add("o¢",    "\u1F45")  # O(/
-    t.add("ÆO",    "\u1F48")  # *)O
-    t.add("uj",    "\u1F50")  # U)
-    t.add("uJ",    "\u1F51")  # U(
-    t.add("uÁ",    "\u1F54")  # U)/
-    t.add("u¢",    "\u1F55")  # U(/
-    t.add("uª",    "\u1F56")  # U)=
-    t.add("u°",    "\u1F57")  # U(=
-    t.add("ï",    "\u1F59")  # *U(
-    t.add("wî",    "\u1F60")  # W)
-    t.add("wð",    "\u1F61")  # W(
-    t.add("wà",    "\u1F65")  # W(/
-    t.add("wâ",    "\u1F65")  # W(/
-    t.add("w¡",    "\u1F66")  # W)=
-    t.add("wðv",   "\u1F67")  # W(=
-    t.add("ÆW",    "\u1F68")  # *)W
-    t.add("ïW",    "\u1F69")  # *(W
-    t.add("aÀ",    "\u1F71")  # A/
-    t.add("eÖ",    "\u1F73")  # E/
-    t.add("h/",    "\u1F75")  # H/
-    t.add("iÖ",    "\u1F77")  # I/
-    t.add("o/",    "\u1F79")  # O/
-    t.add("u/",    "\u1F7B")  # U/
-    t.add("wÀ",    "\u1F7D")  # W/
-    t.add("aàö",   "\u1F84")  # A)/|
-    t.add("aâö",   "\u1F85")  # A(/|
-    t.add("wîö",   "\u1FA0")  # W)|
-    t.add("aö",    "\u1FB3")  # A|
-    t.add("aÀö",   "\u1FB4")  # A/|
-    t.add("a×",    "\u1FB6")  # A=
-    t.add("hö",    "\u1FC3")  # H|
-    t.add("h/ö",   "\u1FC4")  # H/|
-    t.add("hö/",   "\u1FC4")  # H/|
-    t.add("hv",    "\u1FC6")  # H=
-    t.add("höv",   "\u1FC7")  # H=|
-    t.add("hvö",   "\u1FC7")  # H=|
-    t.add("iÃ",    "\u1FD6")  # I=
-    t.add("rJ",    "\u1FE5")  # R(
-    t.add("uv",    "\u1FE6")  # U=
-    t.add("ïR",    "\u1FEC")  # *(R
-    t.add("wö",    "\u1FF3")  # W|
-    t.add("wö/",   "\u1FF4")  # W/|
-    t.add("wÀö",   "\u1FF4")  # W/|
-    t.add("w×",    "\u1FF6")  # W=
-    t.add("wöv",   "\u1FF7")  # W=|
-    t.add("wö×",   "\u1FF7")  # W=|
+    t.add(u"aî",    "\u1F00")  # A)
+    t.add(u"að",    "\u1F01")  # A(
+    t.add(u"aà",    "\u1F04")  # A)/
+    t.add(u"aâ",    "\u1F05")  # A(/
+    t.add(u"a¡",    "\u1F06")  # A)=
+    t.add(u"ÆA",    "\u1F08")  # )*A
+    t.add(u"ïA",    "\u1F09")  # (*A
+    t.add(u"ÚA",    "\u1F0C")  # )/*A
+    t.add(u"ÝA",    "\u1F0D")  # (/*A
+    t.add(u"ÆAv",   "\u1F0E")  # *)=A
+    t.add(u"eú",    "\u1F10")  # E)
+    t.add(u"eû",    "\u1F11")  # E(
+    t.add(u"e¦",    "\u1F14")  # E)/
+    t.add(u"e¼",    "\u1F15")  # E(/
+    t.add(u"ÆE",    "\u1F18")  # *)E
+    t.add(u"ïE",    "\u1F19")  # *(E
+    t.add(u"EÁ",    "\u1F1C")  # *)/E
+    t.add(u"ÝE",    "\u1F1D")  # *(/E
+    t.add(u"hj",    "\u1F20")  # H)
+    t.add(u"hJ",    "\u1F21")  # H(
+    t.add(u"hÁ",    "\u1F24")  # H)/
+    t.add(u"h¢",    "\u1F25")  # H(/
+    t.add(u"hª",    "\u1F26")  # H)=
+    t.add(u"h°",    "\u1F27")  # H(=
+    t.add(u"ÆH",    "\u1F28")  # *H)
+    t.add(u"ïH",    "\u1F29")  # *H(
+    t.add(u"HÁ",    "\u1F2C")  # *)/H
+    t.add(u"iú",    "\u1F30")  # I)
+    t.add(u"iû",    "\u1F31")  # I(
+    t.add(u"i¦",    "\u1F34")  # I)/
+    t.add(u"i¼",    "\u1F35")  # I(/
+    t.add(u"i¥",    "\u1F36")  # I)=
+    t.add(u"iÐ",    "\u1F37")  # I(=
+    t.add(u"ÆI",    "\u1F38")  # *)I
+    t.add(u"ïI",    "\u1F39")  # *(I
+    t.add(u"oj",    "\u1F40")  # O)
+    t.add(u"oJ",    "\u1F41")  # O(
+    t.add(u"oÁ",    "\u1F44")  # O)/
+    t.add(u"o¢",    "\u1F45")  # O(/
+    t.add(u"ÆO",    "\u1F48")  # *)O
+    t.add(u"uj",    "\u1F50")  # U)
+    t.add(u"uJ",    "\u1F51")  # U(
+    t.add(u"uÁ",    "\u1F54")  # U)/
+    t.add(u"u¢",    "\u1F55")  # U(/
+    t.add(u"uª",    "\u1F56")  # U)=
+    t.add(u"u°",    "\u1F57")  # U(=
+    t.add(u"ïU",    "\u1F59")  # *U(
+    t.add(u"wî",    "\u1F60")  # W)
+    t.add(u"wð",    "\u1F61")  # W(
+    t.add(u"wà",    "\u1F65")  # W(/
+    t.add(u"wâ",    "\u1F65")  # W(/
+    t.add(u"w¡",    "\u1F66")  # W)=
+    t.add(u"wðv",   "\u1F67")  # W(=
+    t.add(u"ÆW",    "\u1F68")  # *)W
+    t.add(u"ïW",    "\u1F69")  # *(W
+    t.add(u"aÀ",    "\u1F71")  # A/
+    t.add(u"eÖ",    "\u1F73")  # E/
+    t.add(u"h/",    "\u1F75")  # H/
+    t.add(u"iÖ",    "\u1F77")  # I/
+    t.add(u"o/",    "\u1F79")  # O/
+    t.add(u"u/",    "\u1F7B")  # U/
+    t.add(u"wÀ",    "\u1F7D")  # W/
+    t.add(u"aàö",   "\u1F84")  # A)/|
+    t.add(u"aâö",   "\u1F85")  # A(/|
+    t.add(u"wîö",   "\u1FA0")  # W)|
+    t.add(u"aö",    "\u1FB3")  # A|
+    t.add(u"aÀö",   "\u1FB4")  # A/|
+    t.add(u"a×",    "\u1FB6")  # A=
+    t.add(u"hö",    "\u1FC3")  # H|
+    t.add(u"h/ö",   "\u1FC4")  # H/|
+    t.add(u"hö/",   "\u1FC4")  # H/|
+    t.add(u"hv",    "\u1FC6")  # H=
+    t.add(u"höv",   "\u1FC7")  # H=|
+    t.add(u"hvö",   "\u1FC7")  # H=|
+    t.add(u"iÃ",    "\u1FD6")  # I=
+    t.add(u"rJ",    "\u1FE5")  # R(
+    t.add(u"uv",    "\u1FE6")  # U=
+    t.add(u"ïR",    "\u1FEC")  # *(R
+    t.add(u"wö",    "\u1FF3")  # W|
+    t.add(u"wö/",   "\u1FF4")  # W/|
+    t.add(u"wÀö",   "\u1FF4")  # W/|
+    t.add(u"w×",    "\u1FF6")  # W=
+    t.add(u"wöv",   "\u1FF7")  # W=|
+    t.add(u"wö×",   "\u1FF7")  # W=|
     
-    t.add(",",     ",")       # ,
-    t.add(" ",     " ")       # space
-    t.add("\t",    "\t")      # tab
+    t.add(u",",     ",")       # ,
+    t.add(u" ",     " ")       # space
+    t.add(u"\t",    "\t")      # tab
     
     # especially for greenlee
-    t.add("=",     "=")       # indeclinable
-    t.add("-",     "-")       # affix
-    t.add("&",     "&")       # &
-    t.add("*",     "*")       # irregular form
-    t.add("(1)",   "(1)")     # lexeme differentiation
-    t.add("(2)",   "(2)")     # lexeme differentiation
-    t.add("(3)",   "(3)")     # lexeme differentiation
-    t.add("___",   "___")     # ???
+    t.add(u"=",     "=")       # indeclinable
+    t.add(u"-",     "-")       # affix
+    t.add(u"&",     "&")       # &
+    t.add(u"*",     "*")       # irregular form
+    t.add(u"(1)",   "(1)")     # lexeme differentiation
+    t.add(u"(2)",   "(2)")     # lexeme differentiation
+    t.add(u"(3)",   "(3)")     # lexeme differentiation
+    t.add(u"___",   "___")     # ???
     
     return t
 
@@ -2410,7 +2417,7 @@ def beta2DiscoveryBibleTransliterationTrie():
     t = Trie()
 
     t.add("*A",      "A")
-    t.add("*AU)",    "A")
+    t.add("*AU)",    "Au")
     t.add("*B",      "B")
     t.add("*G*G",    "NG")
     t.add("*G*K",    "NK")
@@ -2422,11 +2429,11 @@ def beta2DiscoveryBibleTransliterationTrie():
     t.add("*EU)=",   "Eú")
     t.add("*EU)\\",  "Eú")
     t.add("*EU)/",   "Eú")
-    t.add("*EU)",    "E")
+    t.add("*EU)",    "Eu")
     t.add("*EU(=",   "Heú")
     t.add("*EU(\\",  "Heú")
     t.add("*EU(/",   "Heú")
-    t.add("*EU(",    "He")
+    t.add("*EU(",    "Heu")
     t.add("*Z",      "Z")
     t.add("*H",      "Ē")
     t.add("*HU)=",   "Ēý")
@@ -2445,18 +2452,18 @@ def beta2DiscoveryBibleTransliterationTrie():
     t.add("*R",      "R")
     t.add("*S",      "S")
     t.add("*T",      "T")
-    t.add("*A*",    "A")
-    t.add("*E*",    "E")
-    t.add("*H*",    "ĒY")
-    t.add("*O*",    "O")
+    t.add("*A*U",    "AU")
+    t.add("*E*U",    "EU")
+    t.add("*H*U",    "ĒY")
+    t.add("*O*U",    "OU")
     t.add("*U*I",    "YI")
-    t.add("*A",     "A")
-    t.add("*E",     "E")
-    t.add("*H",     "Ēy")
-    t.add("*OU)",    "O")
-    t.add("*O",     "O")
+    t.add("*AU",     "Au")
+    t.add("*EU",     "Eu")
+    t.add("*HU",     "Ēy")
+    t.add("*OU)",    "Ou")
+    t.add("*OU",     "Ou")
     t.add("*UI",     "Yi")
-    t.add("*",      "Y")
+    t.add("*U",      "Y")
     t.add("*F",      "Ph")
     t.add("*X",      "X")
     t.add("*Y",      "Ps")
@@ -2505,14 +2512,14 @@ def beta2DiscoveryBibleTransliterationTrie():
     t.add("S",      "s")
     t.add("T",      "t")
 
-    t.add("A",     "a")
-    t.add("E",     "e")
-    t.add("H",     "ēy")
-    t.add("O",     "o")
+    t.add("AU",     "au")
+    t.add("EU",     "eu")
+    t.add("HU",     "ēy")
+    t.add("OU",     "ou")
     t.add("UI",     "yi")
     t.add("UI=",    "yí")
     t.add("UI(",    "hyi")
-    t.add("",      "y")
+    t.add("U",      "y")
     t.add("F",      "ph")
     t.add("X",      "x")
     t.add("Y",      "ps")
@@ -2582,16 +2589,16 @@ def beta2DiscoveryBibleTransliterationTrie():
     t.add("O(\\",   "hó")
     t.add("O)/",    "ó")
     t.add("O(/",    "hó")
-    t.add("AU)",    "a")
-    t.add("EU)",    "e")
+    t.add("AU)",    "au")
+    t.add("EU)",    "eu")
     t.add("HU)",    "ēy")
-    t.add("OU)",    "o")
+    t.add("OU)",    "ou")
     t.add("U)",     "y")
     t.add("U(I",    "hyi")
-    t.add("AU(",    "ha")
-    t.add("EU(",    "he")
+    t.add("AU(",    "hau")
+    t.add("EU(",    "heu")
     t.add("HU(",    "hēy")
-    t.add("OU(",    "ho")
+    t.add("OU(",    "hou")
     t.add("U(",     "hy")
     t.add("AU)\\",  "aú")
     t.add("EU)\\",  "eú")
@@ -2725,15 +2732,15 @@ def beta2DiscoveryBibleTransliterationTrie():
     t.add("*U(I",    "Hyi")
     t.add("*U(*I",   "HUI")
     t.add("*U(",     "Hy")
-    t.add("*(",     "Hy")
+    t.add("*(U",     "Hy")
     t.add("*U(\\",   "Hý")
-    t.add("*(\\",   "Hý")
+    t.add("*(\\U",   "Hý")
     #
-    t.add("*(/",    "Hý")
+    t.add("*(/U",    "Hý")
     t.add("*U(/",    "Hý")
     
     #
-    t.add("*(=",    "Hý")
+    t.add("*(=U",    "Hý")
     t.add("*U(=",    "Hý")
     
     t.add("*W)",     "Ō")
@@ -2913,7 +2920,7 @@ def beta2unicode(beta_string):
     # note that this adds \n to ensure correct handling of final sigma
     unicode_string, remainder = beta2unicodetrie.convert(beta_string + "\n")
     if remainder:
-        raise ValueError, "unknown sequence %s in %s" % (repr(remainder), repr(beta_string))
+        raise ValueError("unknown sequence %s in %s" % (remainder, beta_string))
     return unicode_string
 
 
@@ -2921,7 +2928,7 @@ def galatia2beta(galatia_string):
     # note that this adds \n to ensure correct handling of final sigma
     beta_string, remainder = galatia2betatrie.convert(galatia_string + "\n")
     if remainder:
-        raise ValueError, "unknown sequence %s in %s" % (remainder, galatia_string)
+        raise ValueError("unknown sequence %s in %s" % (remainder, galatia_string))
     return beta_string
 
 def symbol2beta(symbol_string):
@@ -2934,29 +2941,29 @@ def symbol2beta(symbol_string):
 def accordance2unicode(accordance_string):
     unicode_string, remainder = accordance2unicodetrie.convert(accordance_string)
     if remainder:
-        raise ValueError, "unknown sequence %s in %s" % (remainder.encode("utf-8"), accordance_string.encode("utf-8"))
+        raise ValueError("unknown sequence %s in %s" % (remainder.encode("utf-8"), accordance_string.encode("utf-8")))
     return unicode_string
 
 def beta2sbl(beta_string):
     # note that this adds \n to ensure correct handling of final sigma
     unicode_string, remainder = beta2sbltransliterationtrie.convert(beta_string + "\n")
     if remainder:
-        raise ValueError, "unknown sequence %s in '%s'" % (repr(remainder), beta_string)
+        raise ValueError("unknown sequence %s in '%s'" % (repr(remainder), beta_string))
     return unicode_string
 
 def beta2discoverybibletransliteration(beta_string):
     # note that this adds \n to ensure correct handling of final sigma
     unicode_string, remainder = beta2sbltransliterationtrie.convert(beta_string + "\n")
     if remainder:
-        raise ValueError, "unknown sequence %s in %s" % (remainder, beta_string)
+        raise ValueError("unknown sequence %s in %s" % (remainder, beta_string))
     return unicode_string
 
 def unicode2beta(unicode_string):
     # note that this adds \n to ensure correct handling of final sigma
     beta_string, remainder = unicode2betatrie.convert(unicode_string + "\n")
     if remainder:
-        print(("unknown sequence '%s' in %s: U+%04X, %s" % (remainder, unicode_string, ord(remainder[0]), repr(unicode_string))).encode('utf-8'), file=sys.stderr)
-        raise ValueError
+        sys.stderr.write("unknown sequence '%s' in %s: U+%04X, %s" % (remainder, unicode_string, ord(remainder[0]), repr(unicode_string)))
+        raise ValueError("unknown sequence '%s' in %s: U+%04X, %s" % (remainder, unicode_string, ord(remainder[0]), repr(unicode_string)))
     return beta_string
 
 
@@ -2968,32 +2975,21 @@ beta2sbltransliterationtrie = beta2SBLTransliterationTrie()
 unicode2betatrie = unicode2BetaTrie()
 accordance2unicodetrie = accordance2UnicodeTrie()
 
-def maketrans(myfrom, myto):
-    translate_table = {}
-    assert len(myfrom) == len(myto)
-    for index in range(0, len(myfrom)):
-        from_c = myfrom[index]
-        to_c = myto[index]
-        from_ord = ord(from_c)
-        translate_table[from_ord] = to_c
-    return translate_table
-         
-
 # 
 UMARtoBETAtrans = maketrans("abgdezhqiklmnxoprsvtufcyw", "ABGDEZHQIKLMNCOPRSSTUFXYW")
 UMARtoGALATIAtrans = maketrans("abgdezqyiklmnxoprsvtufcyw", "abgdezjqiklmnxoprsvtufcyw")
 BETAtoUMARtrans = maketrans("ABGDEZHQIKLMNCOPRSTUFXYW", "abgdezhqiklmnxoprstufcyw")
 
 
-OLBtoBETAtrans = maketrans("abgdezhqiklmnxoprsvtufcyw", "ABGDEZHQIKLMNCOPRSSTUFXYW")
-OLBtoGALATIAtrans = maketrans("abgdezhqiklmnxoprsvtufcyw", "abgdezjqiklmnxoprsvtufcyw")
+OLBtoBETAtrans = maketrans("abgdezhyiklmnxoprsvtufcqw", "ABGDEZHQIKLMNCOPRSSTUFXYW")
+OLBtoGALATIAtrans = maketrans("abgdezhyiklmnxoprsvtufcqw", "abgdezjqiklmnxoprsvtufcyw")
 
 TAGtoHELBETIKEtrans = maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "AB\x04\x05E\x06\x07HI\x08K\x0bMNO\x0c\x10\x11\x12T\x1b\x1c\x1d\x1e\x1fZ")
 
 BETAtoGALATIAtrans = maketrans("ABGDEZHQIKLMNCOPRSSTUFXYW", "abgdezjqiklmnxoprsvtufcyw")
 MixedCaseBETAtoBETAtrans = maketrans("AaBbGgDdEeZzHhQqIiKkLlMmNnCcOoPpRrSsJjTtUuFfXxYyWw", "AABBGGDDEEZZHHQQIIKKLLMMNNCCOOPPRRSSSSTTUUFFXXYYWW")
 
-BETAtoOLBtrans = maketrans("ABGDEZHQIKLMNCOPRSTUFXYW", "abgdezhqiklmnxoprstufcyw")
+BETAtoOLBtrans = maketrans("ABGDEZHQIKLMNCOPRSTUFXYW", "abgdezhyiklmnxoprstufcqw")
 
 
 reolbstrip = re.compile("[\\[\\]<>]+")
@@ -3004,9 +3000,6 @@ reMoveDiacriticsBETA = re.compile(r'\*([AEHIOUW][IU]?)([\(\)][/=\\|]*)')
 reMoveBreathingRhoBETA = re.compile(r'\*R([\(\)])')
 reMoveBreathing2RhoBETA = re.compile(r'\*([\(\)])R')
 reMoveStarBETA = re.compile(r'\*([\(\)][/=\\\|]*)([AEHIOUW][IU]?)')
-
-def stripolb(olb):
-    return reolbstrip.sub(r'', olb)
 
 def RemoveCasingBETA(beta_surface):
     newstr = beta_surface
@@ -3066,13 +3059,13 @@ def UMARtoBETAtranslate(str):
 def BETAtoOLBtranslate(str):
     newstr = str.translate(BETAtoOLBtrans)
     if len(newstr) > 0 and newstr[-1] == "s":
-	newstr = newstr[:-1] + "v"
+        newstr = newstr[:-1] + "v"
     return newstr
 
 def BETAtoUMARtranslate(str):
     newstr = str.translate(BETAtoUMARtrans)
     if len(newstr) > 0 and newstr[-1] == "s":
-	newstr = newstr[:-1] + "v"
+        newstr = newstr[:-1] + "v"
     return newstr
 
 def UMARtoGALATIAtranslate(str):
@@ -3097,11 +3090,32 @@ def MixedCaseBETAtoBETAtranslateWithStar(str):
 def TAGtoHELBETIKEtranslate(str):
     return str.translate(TAGtoHELBETIKEtrans)
 
-def mangleMQLString(str):
-    return str.replace("\\", "\\\\").replace("\"", "\\\"")
+def mangleMQLString(s):
+    if type(s) == type(b''):
+        pass
+    else:
+        assert type(s) == type('')
+        s = s.encode('utf-8')
+        
+    result = []
+    for x in s:
+        if x == b"\n":
+            result.append("\\n")
+        elif x == b"\t":
+            result.append("\\t")
+        elif x == b"\"":
+            result.append("\\\"")
+        elif x == b"\\":
+            result.append("\\\\")
+        elif ord(x) > ord(b"~"):
+            result.append("\\x%02x" % ord(x))
+        else:
+            result.append(x.decode('utf-8'))
 
-unicode_punctuation_re = re.compile(ur'[\u0387\u0373.,\u2014]')
+    return "".join(result)
+
+
+unicode_punctuation_re = re.compile(r'[\u0387\u0373.,\u2014]')
 
 def remove_punctuation_Unicode(unicode_greek):
-    return unicode_punctuation_re.sub(ur'', unicode_greek)
-
+    return unicode_punctuation_re.sub(r'', unicode_greek)

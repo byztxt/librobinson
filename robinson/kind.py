@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2005-2017 Scripture Systems ApS
-#
-# Made available under the MIT License.
-#
-# See the file LICENSE in the distribution for details.
-#
 kind_word = 0
 kind_number = 1
 kind_parsing = 2
@@ -47,4 +39,3 @@ kANLEX = 1
 kOLB = 0
 kBETA = 1
 kUnicode = 2
-
