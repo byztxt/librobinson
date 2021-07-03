@@ -10,6 +10,7 @@ setup(
         'robinson/convert.py',
         'robinson/__init__.py',
         'robinson/kind.py',
+        'robinson/readbyz.py',
         'robinson/reader.py',
         'robinson/readwhat.py',
         'robinson/robinson.py',
